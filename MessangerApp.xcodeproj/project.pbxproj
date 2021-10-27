@@ -149,6 +149,7 @@
 				C3372E7527296DE60003C08D /* Views */,
 				C3372E7427296DB70003C08D /* Models */,
 				C3372E7327296D2D0003C08D /* Resources */,
+				C3372E51272945890003C08D /* Info.plist */,
 			);
 			path = MessangerApp;
 			sourceTree = "<group>";
@@ -174,7 +175,6 @@
 		C3372E7327296D2D0003C08D /* Resources */ = {
 			isa = PBXGroup;
 			children = (
-				C3372E51272945890003C08D /* Info.plist */,
 				C3372E45272945880003C08D /* SceneDelegate.swift */,
 				C3372E43272945870003C08D /* AppDelegate.swift */,
 			);
