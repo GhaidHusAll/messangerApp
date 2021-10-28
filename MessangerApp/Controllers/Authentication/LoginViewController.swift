@@ -9,27 +9,30 @@ import UIKit
 
 class LoginViewController: UIViewController {
 
+    @IBOutlet weak var emailAddress: UITextField!
+    @IBOutlet weak var passWord: UITextField!
     override func viewDidLoad() {
         super.viewDidLoad()
-        
         setbackground()
     }
-
+    override func viewWillAppear(_ animated: Bool) {
+        // to hide the navigationbar
+        self.navigationController?.setNavigationBarHidden(true, animated: animated)
+    }
     @IBAction func ToRegister(_ sender: Any) {
         let addvc = UIStoryboard.init(name: "Main", bundle: Bundle.main).instantiateViewController(withIdentifier: "register") as? RegisterViewController
                self.navigationController?.pushViewController(addvc!, animated: true)
-        
-        print("hereee")
-        
     }
     
-    func setbackground () {
-                //background
-                let backgroundImage = UIImageView(frame: UIScreen.main.bounds)
-                backgroundImage.image = UIImage(named: "chatt.png")
-                backgroundImage.contentMode = UIView.ContentMode.scaleAspectFill
-                self.view.insertSubview(backgroundImage, at: 0)
-        
+    @IBAction func loginByFacebook(_ sender: Any) {
     }
+    @IBAction func Login(_ sender: Any) {
+    }
+    func setbackground () {
+                // set background image
+        view.backgroundColor  = UIColor(patternImage: UIImage(named: "chatt2.png")!)
+    }
+   
+    
 }
 

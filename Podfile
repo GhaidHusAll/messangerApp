@@ -6,7 +6,13 @@ target 'MessangerApp' do
   use_frameworks!
 
   # Pods for MessangerApp
-
+  pod 'IQKeyboardManagerSwift'
+  pod 'PasswordTextField'
+  
+  pod 'Firebase/Core'
+  pod 'Firebase/Auth'
+  pod 'Firebase/Database'
+  
   target 'MessangerAppTests' do
     inherit! :search_paths
     # Pods for testing
