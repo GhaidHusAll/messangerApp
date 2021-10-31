@@ -8,11 +8,12 @@ target 'MessangerApp' do
   # Pods for MessangerApp
   pod 'IQKeyboardManagerSwift'
   pod 'PasswordTextField'
-  
+  pod 'Firebase/Analytics'
   pod 'Firebase/Core'
   pod 'Firebase/Auth'
   pod 'Firebase/Database'
-  
+  pod 'GoogleSignIn'
+
   target 'MessangerAppTests' do
     inherit! :search_paths
     # Pods for testing

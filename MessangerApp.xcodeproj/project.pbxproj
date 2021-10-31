@@ -3,13 +3,14 @@
 	archiveVersion = 1;
 	classes = {
 	};
-	objectVersion = 50;
+	objectVersion = 51;
 	objects = {
 
 /* Begin PBXBuildFile section */
 		1FCC5AB3F134C615DAD1EBA3 /* Pods_MessangerApp_MessangerAppUITests.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 48392A34907515321332D216 /* Pods_MessangerApp_MessangerAppUITests.framework */; };
 		281A52CBCCBF9254E06B2B54 /* Pods_MessangerApp.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 2E3B1EC8335672CD813C860A /* Pods_MessangerApp.framework */; };
 		92BBD9A9BE22DCA6B28047F9 /* Pods_MessangerAppTests.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = D5114F5F620F8696ADDDE624 /* Pods_MessangerAppTests.framework */; };
+		C3059C17272E874C00577E3B /* GoogleService-Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = C3059C16272E874C00577E3B /* GoogleService-Info.plist */; };
 		C3372E44272945870003C08D /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = C3372E43272945870003C08D /* AppDelegate.swift */; };
 		C3372E46272945880003C08D /* SceneDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = C3372E45272945880003C08D /* SceneDelegate.swift */; };
 		C3372E48272945880003C08D /* LoginViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = C3372E47272945880003C08D /* LoginViewController.swift */; };
@@ -20,7 +21,7 @@
 		C3372E66272945890003C08D /* MessangerAppUITests.swift in Sources */ = {isa = PBXBuildFile; fileRef = C3372E65272945890003C08D /* MessangerAppUITests.swift */; };
 		C3372E7C27296F4E0003C08D /* RegisterViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = C3372E7B27296F4E0003C08D /* RegisterViewController.swift */; };
 		C3372E7E272970110003C08D /* ProfileViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = C3372E7D272970110003C08D /* ProfileViewController.swift */; };
-		C3372E80272970670003C08D /* ConversationViewController ConversationViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = C3372E7F272970670003C08D /* ConversationViewController ConversationViewController.swift */; };
+		C3372E80272970670003C08D /* ConversationViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = C3372E7F272970670003C08D /* ConversationViewController.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -48,6 +49,7 @@
 		48392A34907515321332D216 /* Pods_MessangerApp_MessangerAppUITests.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_MessangerApp_MessangerAppUITests.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		51E39C3FAB5AC3919D92959B /* Pods-MessangerApp-MessangerAppUITests.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-MessangerApp-MessangerAppUITests.debug.xcconfig"; path = "Target Support Files/Pods-MessangerApp-MessangerAppUITests/Pods-MessangerApp-MessangerAppUITests.debug.xcconfig"; sourceTree = "<group>"; };
 		62C19ED14068F41BFE42C466 /* Pods-MessangerApp.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-MessangerApp.debug.xcconfig"; path = "Target Support Files/Pods-MessangerApp/Pods-MessangerApp.debug.xcconfig"; sourceTree = "<group>"; };
+		C3059C16272E874C00577E3B /* GoogleService-Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; name = "GoogleService-Info.plist"; path = "../../../Downloads/GoogleService-Info.plist"; sourceTree = "<group>"; };
 		C3372E40272945870003C08D /* MessangerApp.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = MessangerApp.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		C3372E43272945870003C08D /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		C3372E45272945880003C08D /* SceneDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SceneDelegate.swift; sourceTree = "<group>"; };
@@ -64,7 +66,7 @@
 		C3372E67272945890003C08D /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		C3372E7B27296F4E0003C08D /* RegisterViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RegisterViewController.swift; sourceTree = "<group>"; };
 		C3372E7D272970110003C08D /* ProfileViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProfileViewController.swift; sourceTree = "<group>"; };
-		C3372E7F272970670003C08D /* ConversationViewController ConversationViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "ConversationViewController ConversationViewController.swift"; sourceTree = "<group>"; };
+		C3372E7F272970670003C08D /* ConversationViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ConversationViewController.swift; sourceTree = "<group>"; };
 		D00AFBF0CFF64B312AA7FBBB /* Pods-MessangerAppTests.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-MessangerAppTests.release.xcconfig"; path = "Target Support Files/Pods-MessangerAppTests/Pods-MessangerAppTests.release.xcconfig"; sourceTree = "<group>"; };
 		D5114F5F620F8696ADDDE624 /* Pods_MessangerAppTests.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_MessangerAppTests.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 /* End PBXFileReference section */
@@ -145,6 +147,7 @@
 		C3372E42272945870003C08D /* MessangerApp */ = {
 			isa = PBXGroup;
 			children = (
+				C3059C16272E874C00577E3B /* GoogleService-Info.plist */,
 				C3372E7727296E430003C08D /* Controllers */,
 				C3372E7527296DE60003C08D /* Views */,
 				C3372E7427296DB70003C08D /* Models */,
@@ -228,7 +231,7 @@
 		C3372E7927296EDB0003C08D /* Conversation */ = {
 			isa = PBXGroup;
 			children = (
-				C3372E7F272970670003C08D /* ConversationViewController ConversationViewController.swift */,
+				C3372E7F272970670003C08D /* ConversationViewController.swift */,
 			);
 			path = Conversation;
 			sourceTree = "<group>";
@@ -350,6 +353,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				C3372E50272945890003C08D /* LaunchScreen.storyboard in Resources */,
+				C3059C17272E874C00577E3B /* GoogleService-Info.plist in Resources */,
 				C3372E4D272945890003C08D /* Assets.xcassets in Resources */,
 				C3372E4B272945880003C08D /* Main.storyboard in Resources */,
 			);
@@ -483,7 +487,7 @@
 				C3372E44272945870003C08D /* AppDelegate.swift in Sources */,
 				C3372E7E272970110003C08D /* ProfileViewController.swift in Sources */,
 				C3372E46272945880003C08D /* SceneDelegate.swift in Sources */,
-				C3372E80272970670003C08D /* ConversationViewController ConversationViewController.swift in Sources */,
+				C3372E80272970670003C08D /* ConversationViewController.swift in Sources */,
 				C3372E7C27296F4E0003C08D /* RegisterViewController.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;

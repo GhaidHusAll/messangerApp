@@ -6,6 +6,7 @@
 //
 
 import UIKit
+import Firebase
 
 class RegisterViewController: UIViewController {
 
@@ -14,6 +15,8 @@ class RegisterViewController: UIViewController {
     @IBOutlet weak var lastName: UITextField!
     @IBOutlet weak var emailAdrress: UITextField!
     @IBOutlet weak var passWord: UITextField!
+    @IBOutlet weak var informationErrorlbl: UILabel!
+    @IBOutlet weak var passwordErrorlbl: UILabel!
     override func viewDidLoad() {
         super.viewDidLoad()
         
@@ -23,6 +26,27 @@ class RegisterViewController: UIViewController {
     }
     
     @IBAction func newRegister(_ sender: Any) {
+        
+        if (emailAdrress.text!.isEmpty || lastName.text!.isEmpty || firstName.text!.isEmpty )  {
+            informationErrorlbl.text = "You need to fill all the Fields"
+            informationErrorlbl.isHidden = false
+        } else {informationErrorlbl.isHidden = true}
+        if (passWord.text == "" || passWord.text == nil || passWord.text!.count < 6){
+            passwordErrorlbl.isHidden = false
+        }else {passwordErrorlbl.isHidden = true}
+        
+        if ((!emailAdrress.text!.isEmpty  || emailAdrress.text != "") && (passWord.text != "" || !passWord.text!.isEmpty)){
+            FirebaseAuth.Auth.auth().createUser(withEmail: emailAdrress.text! , password: passWord.text!, completion: { authResult , error  in
+            guard let result = authResult, error == nil else {
+                self.informationErrorlbl.text = "The email already exist"
+                self.informationErrorlbl.isHidden = false
+                print("Error creating user")
+                return
+            }
+            let user = result.user
+            print("Created User: \(user)")
+        })
+        }
     }
     @IBAction func ToLogin(_ sender: Any) {
        if let navController = self.navigationController {
