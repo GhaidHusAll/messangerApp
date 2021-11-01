@@ -7,7 +7,7 @@
 
 import UIKit
 import Firebase
-
+import FirebaseStorage
 class RegisterViewController: UIViewController {
 
     @IBOutlet weak var userProfileImage: UIImageView!
@@ -36,16 +36,7 @@ class RegisterViewController: UIViewController {
         }else {passwordErrorlbl.isHidden = true}
         
         if ((!emailAdrress.text!.isEmpty  || emailAdrress.text != "") && (passWord.text != "" || !passWord.text!.isEmpty)){
-            FirebaseAuth.Auth.auth().createUser(withEmail: emailAdrress.text! , password: passWord.text!, completion: { authResult , error  in
-            guard let result = authResult, error == nil else {
-                self.informationErrorlbl.text = "The email already exist"
-                self.informationErrorlbl.isHidden = false
-                print("Error creating user")
-                return
-            }
-            let user = result.user
-            print("Created User: \(user)")
-        })
+            setUser()
         }
     }
     @IBAction func ToLogin(_ sender: Any) {
@@ -55,7 +46,7 @@ class RegisterViewController: UIViewController {
     }
     func setImageAvater(){
        
-        userProfileImage.layer.cornerRadius =  userProfileImage.frame.width / 4
+        userProfileImage.layer.cornerRadius =  userProfileImage.frame.size.height / 2
         userProfileImage.clipsToBounds = true
         userProfileImage.layer.borderWidth = 3.0
         userProfileImage.layer.borderColor = UIColor.black.cgColor
@@ -67,7 +58,6 @@ class RegisterViewController: UIViewController {
         
     }
     @objc func tapDetected() {
-         print("Single Tap on imageview")
     presentPhotoActionSheet()
      }
     func setbackground () {
@@ -76,9 +66,56 @@ class RegisterViewController: UIViewController {
 
         
     }
-   
-   
-    
+    func setUser(){
+        let db = DatabaseManger()
+        FirebaseAuth.Auth.auth().createUser(withEmail: emailAdrress.text! , password: passWord.text!, completion: { authResult , error  in
+        guard let result = authResult, error == nil else {
+            self.informationErrorlbl.text = "The email already exist"
+            self.informationErrorlbl.isHidden = false
+            print("Error creating user")
+            return
+        }
+        let _ = result.user
+            
+            let mainvc = UIStoryboard.init(name: "Main", bundle: Bundle.main).instantiateViewController(withIdentifier: "dashboard") as? ConversationViewController
+                   self.navigationController?.pushViewController(mainvc!, animated: true)
+                    let defaults = UserDefaults.standard
+                    defaults.set(self.emailAdrress.text, forKey: "Email")    })
+       
+        db.userExists(with: emailAdrress.text!){ isExist in
+            if isExist {
+                
+            }else{
+                self.settheImage{ image in
+                print("imaggge \(image)")
+                db.insertUser(with: ChatAppUser(firstName: self.firstName.text!, lastName: self.lastName.text!, emailAddress: self.emailAdrress.text!, imageProfile: image))
+            }
+            }
+        }
+    }
+    func settheImage(completion: @escaping ((String) -> Void)) {
+        var urlImage = ""
+        if let image = userProfileImage.image?.jpegData(compressionQuality: 0.5) {
+            let storageRef = Storage.storage().reference().child("\(emailAdrress.text!)Image.png")
+        storageRef.putData(image, metadata: nil, completion: {(matedata , error) in
+            if error != nil {
+                print("errpr  \(String(describing: error?.localizedDescription))")
+                self.alert(message: "Profile Image could not be uploaded")
+            }else {
+                storageRef.downloadURL(completion: { (url, error) in
+                    DispatchQueue.main.async(){ urlImage = url!.absoluteString
+                        completion(urlImage)}
+                        })
+            }
+        })
+        }
+    }
+    func alert(message: String) {
+        let alert = UIAlertController(title: "Some Error Accur", message:message, preferredStyle: .alert)
+                alert.addAction(UIAlertAction(title: "Ok", style: .cancel, handler: nil))
+                self.present(alert, animated: true, completion: nil)
+        
+    }
 }
 extension RegisterViewController: UIImagePickerControllerDelegate, UINavigationControllerDelegate {
     // get results of user taking picture or selecting from camera roll
