@@ -18,6 +18,7 @@ class LoginViewController: UIViewController  {
     override func viewDidLoad() {
         super.viewDidLoad()
         setbackground()
+       
     }
    
     
@@ -141,9 +142,9 @@ class LoginViewController: UIViewController  {
         if (passWord.text == "" || passWord.text == nil || passWord.text!.count < 6){
             passwordErrorlbl.isHidden = false
         }else {passwordErrorlbl.isHidden = true}
-        
-        if ((!emailAddress.text!.isEmpty  || emailAddress.text != "") && (passWord.text != "" || !passWord.text!.isEmpty)){
-            FirebaseAuth.Auth.auth().signIn(withEmail: emailAddress.text!, password: passWord.text!, completion: { authResult, error in
+       
+            if ((!self.emailAddress.text!.isEmpty  || self.emailAddress.text != "") && (self.passWord.text != "" || !self.passWord.text!.isEmpty)){
+                FirebaseAuth.Auth.auth().signIn(withEmail: self.emailAddress.text!, password: self.passWord.text!, completion: { authResult, error in
             guard let result = authResult, error == nil else {
                 print("Failed to log in user with email \(String(describing: self.emailAddress.text))")
                 self.emailErrorlbl.isHidden = false

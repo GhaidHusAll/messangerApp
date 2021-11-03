@@ -13,6 +13,13 @@ target 'MessangerApp' do
   pod 'Firebase/Auth'
   pod 'Firebase/Database'
   pod 'GoogleSignIn'
+  # Facebook
+  pod 'FBSDKLoginKit'
+  # message kit
+  pod 'MessageKit'
+  pod 'JGProgressHUD' # spinner overlay (heads up display)
+  pod 'RealmSwift' # similar to coredata (save to device) optimize
+  pod 'SDWebImage' # Image load capability (caching)
   pod 'Firebase/Storage'
   target 'MessangerAppTests' do
     inherit! :search_paths

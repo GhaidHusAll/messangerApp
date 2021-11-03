@@ -12,6 +12,8 @@
 		92BBD9A9BE22DCA6B28047F9 /* Pods_MessangerAppTests.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = D5114F5F620F8696ADDDE624 /* Pods_MessangerAppTests.framework */; };
 		C3059C17272E874C00577E3B /* GoogleService-Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = C3059C16272E874C00577E3B /* GoogleService-Info.plist */; };
 		C3153376272FC96700B3DAF4 /* DatabaseManger.swift in Sources */ = {isa = PBXBuildFile; fileRef = C3153375272FC96700B3DAF4 /* DatabaseManger.swift */; };
+		C315337C27314E5D00B3DAF4 /* NewConversationViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = C315337B27314E5D00B3DAF4 /* NewConversationViewController.swift */; };
+		C315337E2731596100B3DAF4 /* ChatViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = C315337D2731596100B3DAF4 /* ChatViewController.swift */; };
 		C3372E44272945870003C08D /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = C3372E43272945870003C08D /* AppDelegate.swift */; };
 		C3372E46272945880003C08D /* SceneDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = C3372E45272945880003C08D /* SceneDelegate.swift */; };
 		C3372E48272945880003C08D /* LoginViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = C3372E47272945880003C08D /* LoginViewController.swift */; };
@@ -52,6 +54,8 @@
 		62C19ED14068F41BFE42C466 /* Pods-MessangerApp.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-MessangerApp.debug.xcconfig"; path = "Target Support Files/Pods-MessangerApp/Pods-MessangerApp.debug.xcconfig"; sourceTree = "<group>"; };
 		C3059C16272E874C00577E3B /* GoogleService-Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; name = "GoogleService-Info.plist"; path = "../../../Downloads/GoogleService-Info.plist"; sourceTree = "<group>"; };
 		C3153375272FC96700B3DAF4 /* DatabaseManger.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DatabaseManger.swift; sourceTree = "<group>"; };
+		C315337B27314E5D00B3DAF4 /* NewConversationViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NewConversationViewController.swift; sourceTree = "<group>"; };
+		C315337D2731596100B3DAF4 /* ChatViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ChatViewController.swift; sourceTree = "<group>"; };
 		C3372E40272945870003C08D /* MessangerApp.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = MessangerApp.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		C3372E43272945870003C08D /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		C3372E45272945880003C08D /* SceneDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SceneDelegate.swift; sourceTree = "<group>"; };
@@ -180,6 +184,7 @@
 		C3372E7327296D2D0003C08D /* Resources */ = {
 			isa = PBXGroup;
 			children = (
+				C3153375272FC96700B3DAF4 /* DatabaseManger.swift */,
 				C3372E45272945880003C08D /* SceneDelegate.swift */,
 				C3372E43272945870003C08D /* AppDelegate.swift */,
 			);
@@ -189,7 +194,6 @@
 		C3372E7427296DB70003C08D /* Models */ = {
 			isa = PBXGroup;
 			children = (
-				C3153375272FC96700B3DAF4 /* DatabaseManger.swift */,
 			);
 			path = Models;
 			sourceTree = "<group>";
@@ -235,6 +239,8 @@
 			isa = PBXGroup;
 			children = (
 				C3372E7F272970670003C08D /* ConversationViewController.swift */,
+				C315337B27314E5D00B3DAF4 /* NewConversationViewController.swift */,
+				C315337D2731596100B3DAF4 /* ChatViewController.swift */,
 			);
 			path = Conversation;
 			sourceTree = "<group>";
@@ -258,15 +264,13 @@
 				C3372E3C272945870003C08D /* Sources */,
 				C3372E3D272945870003C08D /* Frameworks */,
 				C3372E3E272945870003C08D /* Resources */,
-				2E071283D204B561A23542FF /* [CP] Embed Pods Frameworks */,
+				78414A94206F49AF9631A93C /* [CP] Embed Pods Frameworks */,
 			);
 			buildRules = (
 			);
 			dependencies = (
 			);
 			name = MessangerApp;
-			packageProductDependencies = (
-			);
 			productName = MessangerApp;
 			productReference = C3372E40272945870003C08D /* MessangerApp.app */;
 			productType = "com.apple.product-type.application";
@@ -298,7 +302,7 @@
 				C3372E5D272945890003C08D /* Sources */,
 				C3372E5E272945890003C08D /* Frameworks */,
 				C3372E5F272945890003C08D /* Resources */,
-				6FEB4096E4C28BB3DBA6F183 /* [CP] Embed Pods Frameworks */,
+				DCF1C90D8B2D786DFBB8ACA2 /* [CP] Embed Pods Frameworks */,
 			);
 			buildRules = (
 			);
@@ -341,8 +345,6 @@
 				Base,
 			);
 			mainGroup = C3372E37272945870003C08D;
-			packageReferences = (
-			);
 			productRefGroup = C3372E41272945870003C08D /* Products */;
 			projectDirPath = "";
 			projectRoot = "";
@@ -383,7 +385,7 @@
 /* End PBXResourcesBuildPhase section */
 
 /* Begin PBXShellScriptBuildPhase section */
-		2E071283D204B561A23542FF /* [CP] Embed Pods Frameworks */ = {
+		78414A94206F49AF9631A93C /* [CP] Embed Pods Frameworks */ = {
 			isa = PBXShellScriptBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
@@ -398,23 +400,6 @@
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
 			shellScript = "\"${PODS_ROOT}/Target Support Files/Pods-MessangerApp/Pods-MessangerApp-frameworks.sh\"\n";
-			showEnvVarsInLog = 0;
-		};
-		6FEB4096E4C28BB3DBA6F183 /* [CP] Embed Pods Frameworks */ = {
-			isa = PBXShellScriptBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-			);
-			inputFileListPaths = (
-				"${PODS_ROOT}/Target Support Files/Pods-MessangerApp-MessangerAppUITests/Pods-MessangerApp-MessangerAppUITests-frameworks-${CONFIGURATION}-input-files.xcfilelist",
-			);
-			name = "[CP] Embed Pods Frameworks";
-			outputFileListPaths = (
-				"${PODS_ROOT}/Target Support Files/Pods-MessangerApp-MessangerAppUITests/Pods-MessangerApp-MessangerAppUITests-frameworks-${CONFIGURATION}-output-files.xcfilelist",
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-			shellPath = /bin/sh;
-			shellScript = "\"${PODS_ROOT}/Target Support Files/Pods-MessangerApp-MessangerAppUITests/Pods-MessangerApp-MessangerAppUITests-frameworks.sh\"\n";
 			showEnvVarsInLog = 0;
 		};
 		7948FDAD93C5726950B6764B /* [CP] Check Pods Manifest.lock */ = {
@@ -483,6 +468,23 @@
 			shellScript = "diff \"${PODS_PODFILE_DIR_PATH}/Podfile.lock\" \"${PODS_ROOT}/Manifest.lock\" > /dev/null\nif [ $? != 0 ] ; then\n    # print error to STDERR\n    echo \"error: The sandbox is not in sync with the Podfile.lock. Run 'pod install' or update your CocoaPods installation.\" >&2\n    exit 1\nfi\n# This output is used by Xcode 'outputs' to avoid re-running this script phase.\necho \"SUCCESS\" > \"${SCRIPT_OUTPUT_FILE_0}\"\n";
 			showEnvVarsInLog = 0;
 		};
+		DCF1C90D8B2D786DFBB8ACA2 /* [CP] Embed Pods Frameworks */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputFileListPaths = (
+				"${PODS_ROOT}/Target Support Files/Pods-MessangerApp-MessangerAppUITests/Pods-MessangerApp-MessangerAppUITests-frameworks-${CONFIGURATION}-input-files.xcfilelist",
+			);
+			name = "[CP] Embed Pods Frameworks";
+			outputFileListPaths = (
+				"${PODS_ROOT}/Target Support Files/Pods-MessangerApp-MessangerAppUITests/Pods-MessangerApp-MessangerAppUITests-frameworks-${CONFIGURATION}-output-files.xcfilelist",
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "\"${PODS_ROOT}/Target Support Files/Pods-MessangerApp-MessangerAppUITests/Pods-MessangerApp-MessangerAppUITests-frameworks.sh\"\n";
+			showEnvVarsInLog = 0;
+		};
 /* End PBXShellScriptBuildPhase section */
 
 /* Begin PBXSourcesBuildPhase section */
@@ -495,7 +497,9 @@
 				C3372E7E272970110003C08D /* ProfileViewController.swift in Sources */,
 				C3372E46272945880003C08D /* SceneDelegate.swift in Sources */,
 				C3372E80272970670003C08D /* ConversationViewController.swift in Sources */,
+				C315337C27314E5D00B3DAF4 /* NewConversationViewController.swift in Sources */,
 				C3153376272FC96700B3DAF4 /* DatabaseManger.swift in Sources */,
+				C315337E2731596100B3DAF4 /* ChatViewController.swift in Sources */,
 				C3372E7C27296F4E0003C08D /* RegisterViewController.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;

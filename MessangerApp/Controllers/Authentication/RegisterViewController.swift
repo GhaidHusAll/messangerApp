@@ -37,6 +37,7 @@ class RegisterViewController: UIViewController {
         
         if ((!emailAdrress.text!.isEmpty  || emailAdrress.text != "") && (passWord.text != "" || !passWord.text!.isEmpty)){
             setUser()
+            
         }
     }
     @IBAction func ToLogin(_ sender: Any) {
@@ -68,32 +69,38 @@ class RegisterViewController: UIViewController {
     }
     func setUser(){
         let db = DatabaseManger()
-        FirebaseAuth.Auth.auth().createUser(withEmail: emailAdrress.text! , password: passWord.text!, completion: { authResult , error  in
+        db.userExists(with: emailAdrress.text!){ isExist in
+            if isExist {
+                FirebaseAuth.Auth.auth().createUser(withEmail: self.emailAdrress.text! , password: self.passWord.text!, completion: { authResult , error  in
         guard let result = authResult, error == nil else {
-            self.informationErrorlbl.text = "The email already exist"
+            self.informationErrorlbl.text = "Some Error Accur Try Later "
             self.informationErrorlbl.isHidden = false
             print("Error creating user")
             return
         }
         let _ = result.user
-            
-            let mainvc = UIStoryboard.init(name: "Main", bundle: Bundle.main).instantiateViewController(withIdentifier: "dashboard") as? ConversationViewController
-                   self.navigationController?.pushViewController(mainvc!, animated: true)
-                    let defaults = UserDefaults.standard
-                    defaults.set(self.emailAdrress.text, forKey: "Email")    })
-       
-        db.userExists(with: emailAdrress.text!){ isExist in
-            if isExist {
+       self.settheImage{ image in
+            print(image)
+         db.insertUser(with: ChatAppUser(firstName: self.firstName.text!, lastName: self.lastName.text!, emailAddress: self.emailAdrress.text!, imageProfile: image)) { issdone in
+            if issdone {
+                let defaults = UserDefaults.standard
+            defaults.set(self.emailAdrress.text, forKey: "Email")
+                self.navigationController?.popViewController(animated: true)
+                   }
+         }
+       }
+               })
+        
                 
-            }else{
-                self.settheImage{ image in
-                print("imaggge \(image)")
-                db.insertUser(with: ChatAppUser(firstName: self.firstName.text!, lastName: self.lastName.text!, emailAddress: self.emailAdrress.text!, imageProfile: image))
-            }
+            }else  { self.informationErrorlbl.text = "The email already exist"
+                self.informationErrorlbl.isHidden = false
+                return
             }
         }
+        
     }
     func settheImage(completion: @escaping ((String) -> Void)) {
+        print("innn")
         var urlImage = ""
         if let image = userProfileImage.image?.jpegData(compressionQuality: 0.5) {
             let storageRef = Storage.storage().reference().child("\(emailAdrress.text!)Image.png")
@@ -108,7 +115,7 @@ class RegisterViewController: UIViewController {
                         })
             }
         })
-        }
+        }else {completion(urlImage)}
     }
     func alert(message: String) {
         let alert = UIAlertController(title: "Some Error Accur", message:message, preferredStyle: .alert)
