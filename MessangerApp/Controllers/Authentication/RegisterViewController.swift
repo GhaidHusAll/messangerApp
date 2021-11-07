@@ -8,8 +8,10 @@
 import UIKit
 import Firebase
 import FirebaseStorage
+import JGProgressHUD
 class RegisterViewController: UIViewController {
-
+    
+    private let spinner = JGProgressHUD(style: .light)
     @IBOutlet weak var userProfileImage: UIImageView!
     @IBOutlet weak var firstName: UITextField!
     @IBOutlet weak var lastName: UITextField!
@@ -41,57 +43,59 @@ class RegisterViewController: UIViewController {
         }
     }
     @IBAction func ToLogin(_ sender: Any) {
-       if let navController = self.navigationController {
-                        navController.popViewController(animated: true)
-                    }
+        if let navController = self.navigationController {
+            navController.popViewController(animated: true)
+        }
     }
     func setImageAvater(){
-       
+        
         userProfileImage.layer.cornerRadius =  userProfileImage.frame.size.height / 2
         userProfileImage.clipsToBounds = true
         userProfileImage.layer.borderWidth = 3.0
         userProfileImage.layer.borderColor = UIColor.black.cgColor
         
         let singleTap = UITapGestureRecognizer(target: self, action: #selector(self.tapDetected))
-    singleTap.numberOfTapsRequired = 1
-    userProfileImage.isUserInteractionEnabled = true
-    userProfileImage.addGestureRecognizer(singleTap)
+        singleTap.numberOfTapsRequired = 1
+        userProfileImage.isUserInteractionEnabled = true
+        userProfileImage.addGestureRecognizer(singleTap)
         
     }
     @objc func tapDetected() {
-    presentPhotoActionSheet()
-     }
+        presentPhotoActionSheet()
+    }
     func setbackground () {
-                //background
+        //background
         view.backgroundColor  = UIColor(patternImage: UIImage(named: "chatt2.png")!)
-
+        
         
     }
     func setUser(){
+        spinner.show(in: self.view)
         let db = DatabaseManger()
-        db.userExists(with: emailAdrress.text!){ isExist in
-            if isExist {
+        db.userExists(with: emailAdrress.text!){ notExist in
+            if notExist {
                 FirebaseAuth.Auth.auth().createUser(withEmail: self.emailAdrress.text! , password: self.passWord.text!, completion: { authResult , error  in
-        guard let result = authResult, error == nil else {
-            self.informationErrorlbl.text = "Some Error Accur Try Later "
-            self.informationErrorlbl.isHidden = false
-            print("Error creating user")
-            return
-        }
-        let _ = result.user
-       self.settheImage{ image in
-            print(image)
-         db.insertUser(with: ChatAppUser(firstName: self.firstName.text!, lastName: self.lastName.text!, emailAddress: self.emailAdrress.text!, imageProfile: image)) { issdone in
-            if issdone {
-                let defaults = UserDefaults.standard
-            defaults.set(self.emailAdrress.text, forKey: "Email")
-                self.navigationController?.popViewController(animated: true)
-                   }
-         }
-       }
-               })
-        
-                
+                    guard let result = authResult, error == nil else {
+                        self.informationErrorlbl.text = "Some Error Accur Try Later "
+                        self.informationErrorlbl.isHidden = false
+                        print("Error creating user")
+                        return
+                    }
+                    let _ = result.user
+                    self.settheImage{ image in
+                        print(image)
+                        db.insertUser(with: ChatAppUser(firstName: self.firstName.text!, lastName: self.lastName.text!, emailAddress: self.emailAdrress.text!, imageProfile: image)) { issdone in
+                            if issdone {
+                                let defaults = UserDefaults.standard
+                                defaults.set(self.emailAdrress.text, forKey: "Email")
+                                self.navigationController?.popViewController(animated: true)
+                                self.spinner.dismiss()
+                            }else {self.alert(message: "Some Error occur")
+                                return
+                            }
+                        }
+                    }
+                })
             }else  { self.informationErrorlbl.text = "The email already exist"
                 self.informationErrorlbl.isHidden = false
                 return
@@ -100,27 +104,26 @@ class RegisterViewController: UIViewController {
         
     }
     func settheImage(completion: @escaping ((String) -> Void)) {
-        print("innn")
         var urlImage = ""
         if let image = userProfileImage.image?.jpegData(compressionQuality: 0.5) {
             let storageRef = Storage.storage().reference().child("\(emailAdrress.text!)Image.png")
-        storageRef.putData(image, metadata: nil, completion: {(matedata , error) in
-            if error != nil {
-                print("errpr  \(String(describing: error?.localizedDescription))")
-                self.alert(message: "Profile Image could not be uploaded")
-            }else {
-                storageRef.downloadURL(completion: { (url, error) in
-                    DispatchQueue.main.async(){ urlImage = url!.absoluteString
-                        completion(urlImage)}
-                        })
-            }
-        })
+            storageRef.putData(image, metadata: nil, completion: {(matedata , error) in
+                if error != nil {
+                    print("errpr  \(String(describing: error?.localizedDescription))")
+                    self.alert(message: "Profile Image could not be uploaded")
+                }else {
+                    storageRef.downloadURL(completion: { (url, error) in
+                        DispatchQueue.main.async(){ urlImage = url!.absoluteString
+                            completion(urlImage)}
+                    })
+                }
+            })
         }else {completion(urlImage)}
     }
     func alert(message: String) {
         let alert = UIAlertController(title: "Some Error Accur", message:message, preferredStyle: .alert)
-                alert.addAction(UIAlertAction(title: "Ok", style: .cancel, handler: nil))
-                self.present(alert, animated: true, completion: nil)
+        alert.addAction(UIAlertAction(title: "Ok", style: .cancel, handler: nil))
+        self.present(alert, animated: true, completion: nil)
         
     }
 }
