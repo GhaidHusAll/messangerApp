@@ -10,6 +10,8 @@ import MessageKit
 import InputBarAccessoryView
 import JGProgressHUD
 import IQKeyboardManagerSwift
+import SDWebImage
+
 // message model
 struct Message: MessageType {
     
@@ -17,6 +19,13 @@ struct Message: MessageType {
     public var messageId: String // id to de duplicate
     public var sentDate: Date // date time
     public var kind: MessageKind // text, photo, video, location, emoji
+}
+//media modle
+struct media : MediaItem {
+    var url: URL?
+    var image: UIImage?
+    var placeholderImage: UIImage
+    var size: CGSize
 }
 extension MessageKind {
     var messageKindString: String {
@@ -85,6 +94,7 @@ class ChatViewController: MessagesViewController, UINavigationControllerDelegate
     
     override func viewDidLoad() {
         super.viewDidLoad()
+
         IQKeyboardManager.shared.enable = false
         messagesCollectionView.messagesDataSource = self
         messagesCollectionView.messagesLayoutDelegate = self
@@ -93,40 +103,59 @@ class ChatViewController: MessagesViewController, UINavigationControllerDelegate
         
         scrollsToLastItemOnKeyboardBeginsEditing = true
         maintainPositionOnKeyboardFrameChanged = true
-        messages.removeAll()
         ImageBarItemButton()
-        DispatchQueue.main.async {
-            self.spinner.show(in: self.view)
-            self.getChatContent()
-        }
+        
+        spinner.show(in: self.view)
+        setChats()
         // a timer start
         Timer.scheduledTimer(timeInterval: 1.0, target: self, selector: #selector(updateTimerRefrashr), userInfo: nil, repeats: true)
+      
+       
         
     }
+   
     override func viewDidAppear(_ animated: Bool) {
         super.viewDidAppear(animated)
         messageInputBar.inputTextView.becomeFirstResponder()
+
     }
-    
+    func setChats(){
+        messages.removeAll()
+        DispatchQueue.main.async {
+            self.getChatContent()
+        }
+    }
     func getChatContent(){
         guard let receiverId = otherUser?.senderId else {return}
         
         DB.fetchAllChat(senderId: User.senderId, receiverId: receiverId, completion: {theFetchedMessages in
-            print("chat class \(theFetchedMessages[0]) and ")
             if !theFetchedMessages.isEmpty{
                 let sortedChatsByTime = theFetchedMessages.sorted{ ((($0 as Dictionary<String, AnyObject>)["date"] as? Date)!) < (($1 as Dictionary<String, AnyObject>)["date"] as? Date)! }
                 for oneMessage in sortedChatsByTime {
                     guard let guardOtherUser = self.otherUser else {return}
+                    var kind : MessageKind?
+                    guard let placeHolder = UIImage(named: "emptyImage") else {return}
+
+                    if (oneMessage["type"] as! String) == "photo" {
+                        let url = URL(string: oneMessage["content"] as! String)
+                        kind = .photo(media(url: url,
+                                            image: nil,
+                                            placeholderImage: placeHolder,
+                                            size: CGSize(width: 200, height: 200)))
+                    }else {
+                        kind = .text(oneMessage["content"] as! String)
+                    }
+                    guard let messageKind = kind else {return}
                     if (oneMessage["sender"] as! String) == "me" {
                     self.messages.append(Message(sender: self.User,
                                                  messageId: oneMessage["id"] as! String,
                                                  sentDate: oneMessage["date"] as! Date,
-                                                 kind: .text(oneMessage["content"] as! String)))
+                                                 kind: messageKind))
                     } else {
                         self.messages.append(Message(sender: guardOtherUser ,
                                                      messageId: oneMessage["id"] as! String,
                                                      sentDate: oneMessage["date"] as! Date,
-                                                     kind: .text(oneMessage["content"] as! String)))
+                                                     kind: messageKind ))
                     }
                 }
                
@@ -141,7 +170,8 @@ class ChatViewController: MessagesViewController, UINavigationControllerDelegate
            if timerseconde > 0 {
                   timerseconde -= 1
            }else if (timerseconde == 0){
-            viewDidLoad()
+            setChats()
+            print("refreashd .....")
             timerseconde = 10
            }
            
@@ -154,7 +184,7 @@ class ChatViewController: MessagesViewController, UINavigationControllerDelegate
         messageInputBar.setLeftStackViewWidthConstant(to: 35, animated: false)
         messageInputBar.setStackViewItems([imageButton], forStack: .left, animated: false)
         imageButton.onTouchUpInside({ [weak self] _ in
-            
+            self?.presentPhotoActionSheet()
         })
         
         
@@ -166,10 +196,10 @@ extension ChatViewController :UIImagePickerControllerDelegate {
     func presentPhotoActionSheet(){
         let actionSheet = UIAlertController(title: "send Media", message: "How would you like to select a picture?", preferredStyle: .actionSheet)
         actionSheet.addAction(UIAlertAction(title: "Cancel", style: .cancel, handler: nil))
-        actionSheet.addAction(UIAlertAction(title: "Take Photo", style: .default, handler: { [weak self] _ in
+        actionSheet.addAction(UIAlertAction(title: "Camera", style: .default, handler: { [weak self] _ in
             self?.presentCamera()
         }))
-        actionSheet.addAction(UIAlertAction(title: "Choose Photo", style: .default, handler: { [weak self] _ in
+        actionSheet.addAction(UIAlertAction(title: "Photo Library", style: .default, handler: { [weak self] _ in
             self?.presentPhotoPicker()
         }))
         
@@ -199,28 +229,57 @@ extension ChatViewController :UIImagePickerControllerDelegate {
         guard let selectedImage = info[UIImagePickerController.InfoKey.editedImage] as? UIImage else {
             return
         }
+        let messageId = generateMessageId()
+        spinner.show(in: view)
+     if let imageAsData = selectedImage.jpegData(compressionQuality: 0.5) {
+        DB.uploudMessagePhoto(messageId: messageId, data: imageAsData, completion: {[weak self] result in
+            guard let strongSelf = self else {return}
+            switch result {
+            case .success(let url):
+                let imageUrl = URL(string: url)
+                guard let placeHolder = UIImage(named: "emptyImage") else {return}
+                let newMessage = Message(sender: strongSelf.User,
+                                         messageId: messageId,
+                                         sentDate: Date(),
+                                         kind: MessageKind.photo(media(url: imageUrl,
+                                                                       image: nil,
+                                                                       placeholderImage: placeHolder,
+                                                                       size: .zero)))
+                
+                strongSelf.messages.append(newMessage)
+                guard let receiverId = strongSelf.otherUser?.senderId else {return}
+                strongSelf.DB.addConversation(message: message(content: url, date: Date() , id: messageId, isRead: false, type: newMessage.kind.messageKindString ), senderId: strongSelf.User.senderId, receiverId: receiverId , completion: {isDone in
+                    if isDone {
+                        //saved
+                        print("save conv")
+                        // self.spinner.dismiss()
+                    }else {
+                        // notsaved
+                        print("not saved")
+                    }
+                })
+                strongSelf.messagesCollectionView.reloadData()
+                strongSelf.messagesCollectionView.scrollToLastItem()
+                break
+            case .failure(let error):
+                self?.alert(message: error.localizedDescription)
+                break
+            
+            }
+            strongSelf.spinner.dismiss()
+        })
         
-//        self.profileImage.image = selectedImage
-//        self.settheImage{ image in
-//            self.spinner.show(in: self.view)
-//            if let guardemail = self.email {
-//                self.DB.updateUserImage(image: image, email: guardemail){ isDone in
-//                    if isDone {
-//                        return
-//                    }else {
-//                        self.alert(message: "Error occur updating Profile Image")
-//                    }
-//                }
-//                self.spinner.dismiss()
-//            }
-//            
-//        }
-        
+     }
     }
     func imagePickerControllerDidCancel(_ picker: UIImagePickerController) {
         picker.dismiss(animated: true, completion: nil)
     }
-    
+    func alert(message: String) {
+        let alert = UIAlertController(title: "Some Error Accur", message:message, preferredStyle: .alert)
+        alert.addAction(UIAlertAction(title: "Ok", style: .cancel, handler: nil))
+        self.present(alert, animated: true, completion: nil)
+        
+    }
 }
 
 //-------------------------------inputBarExtension-------------------
@@ -232,17 +291,16 @@ extension ChatViewController: InputBarAccessoryViewDelegate {
             return
         }// if user text is not empty
         else {
-            messages.append(Message(sender: User, messageId: "1", sentDate: Date(), kind: MessageKind.text(text)))
+            let messageid = generateMessageId()
+            let newMessage = Message(sender: User, messageId: messageid, sentDate: Date(), kind: MessageKind.text(text))
+            
+            messages.append(newMessage)
             messagesCollectionView.scrollToLastItem(animated: true)
-            //spinner.show(in: inputBar.sendButton, animated: true)
-            // inputBar.sendButton.addSubview(spinner)
-            //spinner.layer.transform = CATransform3DScale(spinner.layer.transform, 1.0, 3.0, 1.0);
-            // spinner.frame = inputBar.sendButton.bounds
-            let messageid = UUID().uuidString
+           
             guard let receiverId = otherUser?.senderId else {return}
             
             //let date = Date.addingTimeInterval(Date())
-            DB.addConversation(message: message(content: text, date: Date() , id: messageid, isRead: false, type: "text"), senderId: User.senderId, receiverId: receiverId , completion: {isDone in
+            DB.addConversation(message: message(content: text, date: Date() , id: messageid, isRead: false, type: newMessage.kind.messageKindString), senderId: User.senderId, receiverId: receiverId , completion: {isDone in
                 if isDone {
                     //saved
                     print("save conv")
@@ -259,6 +317,8 @@ extension ChatViewController: InputBarAccessoryViewDelegate {
             
         }
     }
+    // generate random and uniqe strings for message id
+    func generateMessageId() -> String {UUID().uuidString}
 }
 extension ChatViewController: MessagesDataSource, MessagesLayoutDelegate, MessagesDisplayDelegate {
     func currentSender() -> SenderType {
@@ -309,4 +369,16 @@ extension ChatViewController: MessagesDataSource, MessagesLayoutDelegate, Messag
     func messageBottomLabelHeight(for message: MessageType, at indexPath: IndexPath, in messagesCollectionView: MessagesCollectionView) -> CGFloat {
         return 20
     }
+    // to set the message photo kind
+    func configureMediaMessageImageView(_ imageView: UIImageView, for message: MessageType, at indexPath: IndexPath, in messagesCollectionView: MessagesCollectionView) {
+        guard let singleMessage = message as? Message else {return}
+        switch singleMessage.kind {
+        case .photo(let media):
+            guard let url = media.url else {return}
+            imageView.sd_setImage(with: url, completed: nil)
+        default:
+        break
+        }
+    }
+    
 }

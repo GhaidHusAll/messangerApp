@@ -101,6 +101,7 @@ class ProfileViewController: UIViewController {
                     self.alert(message: "Profile Image could not be uploaded")
                 }else {
                     storageRef.downloadURL(completion: { (url, error) in
+                       guard  error == nil else {return}
                         DispatchQueue.main.async(){ urlImage = url!.absoluteString
                             completion(urlImage)}
                     })

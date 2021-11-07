@@ -7,7 +7,7 @@
 
 import Foundation
 import FirebaseDatabase
-
+import Firebase
 final class DatabaseManger {
     
     static let shared = DatabaseManger()
@@ -312,6 +312,23 @@ extension DatabaseManger {
                     print("from db \(returnChats)")
                     completion(returnChats)}
                 
+            })
+        })
+    }
+    //functon to upload message photos
+    func uploudMessagePhoto(messageId: String,data: Data, completion: @escaping((Result<String, Error>) -> (Void))){
+        let storageRef = Storage.storage().reference().child("messageImages/\(messageId)Image.png")
+        storageRef.putData(data, metadata: nil, completion: {(matedata , putError) in
+            guard putError == nil else {
+                completion(.failure(putError!))
+                return
+            }
+            storageRef.downloadURL(completion: { (url, error) in
+               guard  error == nil else {
+                completion(.failure(StorageVoidURLError.self as! Error))
+                return
+               }
+                DispatchQueue.main.async(){completion(.success(url!.absoluteString))}
             })
         })
     }
