@@ -64,7 +64,6 @@ class ChatViewController: MessagesViewController, UINavigationControllerDelegate
     private let spinner = JGProgressHUD(style: .dark)
     private var messages = [Message]()
     var DB = DatabaseManger()
-    var timerseconde = 10
     public static var dateFormatter: DateFormatter = {
         let formatter = DateFormatter()
         formatter.dateStyle = .medium
@@ -82,9 +81,7 @@ class ChatViewController: MessagesViewController, UINavigationControllerDelegate
         self.User = user
         self.otherUser = otherUser
         super.init(nibName: nil, bundle: nil)
-        
-        
-        
+        chatListner(receverId: otherUser!.senderId, senderId: user.senderId)
     }
     
     required init?(coder: NSCoder) {
@@ -107,13 +104,44 @@ class ChatViewController: MessagesViewController, UINavigationControllerDelegate
         
         spinner.show(in: self.view)
         setChats()
-        // a timer start
-        Timer.scheduledTimer(timeInterval: 1.0, target: self, selector: #selector(updateTimerRefrashr), userInfo: nil, repeats: true)
-      
-       
+  
         
     }
    
+    func chatListner(receverId: String , senderId: String){
+        guard let receiverId = otherUser?.senderId else {return}
+        
+        DB.updateChat(senderId: User.senderId, receiverId: receiverId, completion: {[weak self] theFetchedMessage in
+
+            guard let strongSelf = self else {return}
+            if !theFetchedMessage.isEmpty{
+                    guard let guardOtherUser = strongSelf.otherUser else {return}
+                    var kind : MessageKind?
+                    guard let placeHolder = UIImage(named: "emptyImage") else {return}
+
+                    if (theFetchedMessage["type"] as? String  == "photo") {
+                        let url = URL(string: theFetchedMessage["type"] as! String)
+                        kind = .photo(media(url: url,
+                                            image: nil,
+                                            placeholderImage: placeHolder,
+                                            size: CGSize(width: 200, height: 200)))
+                    }else {
+                        kind = .text(theFetchedMessage["content"] as! String )
+                    }
+                    guard let messageKind = kind else {return}
+                        strongSelf.messages.append(Message(sender: guardOtherUser ,
+                                                           messageId: theFetchedMessage["id"] as! String ,
+                                                           sentDate: theFetchedMessage["date"]  as! Date ,
+                                                     kind: messageKind ))
+                    
+                
+            }else{print("emmmptyy")}
+            DispatchQueue.main.async {
+                strongSelf.messagesCollectionView.reloadData()
+            }
+            
+        })
+    }
     override func viewDidAppear(_ animated: Bool) {
         super.viewDidAppear(animated)
         messageInputBar.inputTextView.becomeFirstResponder()
@@ -165,17 +193,7 @@ class ChatViewController: MessagesViewController, UINavigationControllerDelegate
             
         })
     }
-    // to keep the chat refresh every period of time
-       @objc func updateTimerRefrashr(){
-           if timerseconde > 0 {
-                  timerseconde -= 1
-           }else if (timerseconde == 0){
-            setChats()
-            print("refreashd .....")
-            timerseconde = 10
-           }
-           
-       }
+      
     //-----------imageINput ------------
     func ImageBarItemButton(){
         let imageButton = InputBarButtonItem()

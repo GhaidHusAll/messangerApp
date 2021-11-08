@@ -309,12 +309,42 @@ extension DatabaseManger {
                     }// snap if
                 } // else exist
                 DispatchQueue.main.async(){
-                    print("from db \(returnChats)")
                     completion(returnChats)}
                 
             })
         })
     }
+    //function to update chat realtime
+    func updateChat(senderId: String,receiverId: String,completion: @escaping (([String:Any]) -> Void)){
+        let safeEmail = safeEmail(email: senderId)
+        var returnChat = [String:Any]()
+        self.database.child(receiverId).child("conversation")
+            .child(safeEmail).observe(.value, with: { snapshot in
+              
+                
+                if !snapshot.exists() {
+                    returnChat = [:]
+                    completion(returnChat)
+                }else{
+                    let value = snapshot.value as! [[String:Any]]
+                    let chat = value[(value.count - 1)]
+                    let date = Date(timeIntervalSince1970: TimeInterval(chat["date"] as! String)! / 1000)
+                    guard let isReadToBool = chat["isRead"] as? String else {return}
+                    var read = true
+                    if isReadToBool == "false" {read = false}
+                    returnChat = [
+                                        "content": (chat["content"])!,
+                                        "date": date,
+                                        "id": chat["message_id"]!,
+                                        "isRead": read,
+                                        "type": chat["message_type"]!,
+                                       "sender" : "user"]
+                                       
+                    DispatchQueue.main.async(){
+                        completion(returnChat)}
+                }//else
+    })
+        }
     //functon to upload message photos
     func uploudMessagePhoto(messageId: String,data: Data, completion: @escaping((Result<String, Error>) -> (Void))){
         let storageRef = Storage.storage().reference().child("messageImages/\(messageId)Image.png")
