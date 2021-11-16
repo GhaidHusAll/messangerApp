@@ -155,10 +155,10 @@ class ChatViewController: MessagesViewController, UINavigationControllerDelegate
     }
     func getChatContent(){
         guard let receiverId = otherUser?.senderId else {return}
-        
         DB.fetchAllChat(senderId: User.senderId, receiverId: receiverId, completion: {theFetchedMessages in
             if !theFetchedMessages.isEmpty{
                 let sortedChatsByTime = theFetchedMessages.sorted{ ((($0 as Dictionary<String, AnyObject>)["date"] as? Date)!) < (($1 as Dictionary<String, AnyObject>)["date"] as? Date)! }
+                self.messages.removeAll()
                 for oneMessage in sortedChatsByTime {
                     guard let guardOtherUser = self.otherUser else {return}
                     var kind : MessageKind?

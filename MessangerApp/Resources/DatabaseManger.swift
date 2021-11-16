@@ -115,8 +115,7 @@ extension DatabaseManger {
     //fetch users list of search
     public func getUsers( completion: @escaping (([[String:String]]) -> Void)) {
         var returnUsers = [[String:String]]()
-        let ref = Database.database().reference(withPath: "contect")
-        ref.observeSingleEvent(of: .value, with: { snapshot in
+        self.database.child("contect").observeSingleEvent(of: .value, with: { snapshot in
             
             if !snapshot.exists() { return }
             for child in 0...snapshot.childrenCount - 1 {
